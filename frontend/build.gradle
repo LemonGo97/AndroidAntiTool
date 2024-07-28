@@ -1,0 +1,16 @@
+plugins {
+  id "com.github.node-gradle.node" version "7.0.2"
+}
+
+node {
+  version = '18.20.4' // Node.js 版本
+  npmVersion = '10.7.0' // NPM 版本
+  yarnVersion = '1.22.22' // Yarn 版本
+  pnpmVersion = '9.6.0' // pnpm 版本
+  download = true // 如果为 true，Gradle 将下载并使用指定版本的 Node.js
+}
+
+tasks.register('build', PnpmTask) {
+  dependsOn pnpmInstall
+  args = ['build']
+}

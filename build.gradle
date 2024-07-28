@@ -1,0 +1,4 @@
+allprojects {
+    group = "com.lemongo97.android.anti"
+    version = project.hasProperty('VERSION_CODE') ? VERSION_CODE : 'unknown'
+}
