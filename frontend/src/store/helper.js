@@ -1,4 +1,5 @@
 import { basePermissions } from '@/settings'
+import { asyncRoutes as asyncPermissions } from "@/router/async-routes.js";
 import api from '@/api'
 
 export async function getUserInfo() {
@@ -18,13 +19,13 @@ export async function getUserInfo() {
 }
 
 export async function getPermissions() {
-  let asyncPermissions = []
-  try {
-    const res = await api.getRolePermissions()
-    asyncPermissions = res?.data || []
-  }
-  catch (error) {
-    console.error(error)
-  }
+  // let asyncPermissions = []
+  // try {
+  //   const res = await api.getRolePermissions()
+  //   asyncPermissions = res?.data || []
+  // }
+  // catch (error) {
+  //   console.error(error)
+  // }
   return basePermissions.concat(asyncPermissions)
 }
