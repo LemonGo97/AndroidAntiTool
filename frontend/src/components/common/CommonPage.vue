@@ -37,7 +37,7 @@
         </template>
       </AppCard>
       <transition name="fade-slide" mode="out-in" appear>
-        <AppCard class="cus-scroll m-12 h-0 flex-1 rounded-8 p-24" bordered>
+        <AppCard :class="noPadding ? 'cus-scroll m-12 h-0 flex-1 rounded-8' : 'cus-scroll m-12 h-0 flex-1 rounded-8 p-24'" bordered>
           <slot />
         </AppCard>
       </transition>
@@ -65,6 +65,10 @@ defineProps({
   showHeader: {
     type: Boolean,
     default: true,
+  },
+  noPadding: {
+    type: Boolean,
+    default: false,
   },
   title: {
     type: String,

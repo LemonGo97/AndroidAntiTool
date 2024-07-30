@@ -1,0 +1,3 @@
+<template>
+  中
+</template>

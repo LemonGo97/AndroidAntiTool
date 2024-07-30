@@ -1,5 +1,17 @@
 export const asyncRoutes = [
   {
+    name: 'AndroidAntiTool',
+    title: 'AndroidAntiTool',
+    code: "AndroidAntiTool",
+    type: "MENU",
+    icon: "i-me:android",
+    show: true,
+    enable: true,
+    path: "/android-anti-tool",
+    component: "/src/views/android/index.vue",
+    order: 0,
+  },
+  {
     name: "基础功能",
     title: "基础功能",
     code: "Base",
