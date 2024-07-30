@@ -1,3 +1,4 @@
 <template>
-  右
 </template>
+<script setup lang="ts">
+</script>

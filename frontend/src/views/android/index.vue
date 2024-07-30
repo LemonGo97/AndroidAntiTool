@@ -1,14 +1,14 @@
 <template>
 
   <CommonPage show-footer no-padding>
-    <div class="android-main">
-      <div class="android-header p-5"><top-bar/></div>
-      <div class="android-left p-5"><left-tool-bar/></div>
+    <div class="android-main overflow-hidden">
+      <div class="android-header android-border p-5"><top-bar/></div>
+      <div class="android-left android-border p-5"><left-tool-bar/></div>
       <div class="android-container">
-        <div class="android-main-content p-5"><main-content/></div>
-        <div class="android-footer"><bottom-tool-bar/></div>
+        <div class="android-main-content android-border p-5"><main-content/></div>
+        <div class="android-footer android-border"><bottom-tool-bar/></div>
       </div>
-      <div class="android-right p-5"><right-tool-bar/></div>
+      <div class="android-right android-border p-5"><right-tool-bar/></div>
     </div>
   </CommonPage>
 
@@ -25,36 +25,45 @@ import MainContent from "@/views/android/components/mainContent.vue";
 <style scoped>
 .android-main {
   display: grid;
-  grid-template-rows: 12.5vh 1fr;
-  grid-template-columns: 2.5vw 1fr 2.5vw; /* 你可以调整这个宽度 */
+  grid-template-rows: 50px 1fr;
+  grid-template-columns: 50px 1fr 50px; /* 你可以调整这个宽度 */
   height: 100%;
-  box-sizing: border-box;
+
+  .android-border {
+    border-style: solid;
+    border-color: #ebecf0;
+    border-width: 1px;
+  }
 
   .android-header {
     grid-column: 1 / -1;
-    background-color: #f1f1f1;
+    background-color: #f7f8fa;
   }
 
   .android-left {
     grid-row: 2;
-    background-color: #d1d1d1;
+    background-color: #f7f8fa;
   }
 
   .android-container {
     grid-row: 2;
-    background-color: #e1e1e1;
+    background-color: #f7f8fa;
 
     display: grid;
-    grid-template-rows:  1fr 12vh;
+    grid-template-rows:  1fr 50px;
+
+    .android-main-content {
+      background-color: #ffffff;
+    }
 
     .android-footer {
-      background-color: #d1d1d1;
+      background-color: #f7f8fa;
     }
   }
 
   .android-right {
     grid-row: 2;
-    background-color: #d1d1d1;
+    background-color: #f7f8fa;
   }
 }
 

@@ -1,10 +1,14 @@
 <template>
   <n-flex size="small" class="p-5">
-    <div class="h-40 w-50 p-5 rounded-5 hover:bg-primary text-align-center icon"
-         v-for="item in items"
-         :key="item" @click="item.action">
-      <i :class="`${item.icon}?mask`" class="text-30" style="color: #6c707e" />
-    </div>
+    <n-tooltip trigger="hover" v-for="item in items" :key="item">
+      <template #trigger>
+        <div class="h-40 w-50 p-5 rounded-5 hover:bg-primary text-align-center icon"
+             @click="item.action">
+          <i :class="`${item.icon}?mask`" class="text-30" style="color: #6c707e" />
+        </div>
+      </template>
+      {{ item.name }}
+    </n-tooltip>
   </n-flex>
 </template>
 <script setup>

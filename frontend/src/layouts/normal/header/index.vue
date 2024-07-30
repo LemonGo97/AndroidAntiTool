@@ -14,23 +14,23 @@
 
     <span class="mx-6 opacity-20">|</span>
 
-    <div class="flex flex-shrink-0 items-center px-12 text-18">
+    <div class="flex flex-shrink-0 items-center text-18">
       <ToggleTheme />
 
       <Fullscreen />
 
-      <i
-        class="i-fe:github mr-16 cursor-pointer"
-        @click="handleLinkClick('https://github.com/zclzone/vue-naive-admin/tree/2.x')"
-      />
-      <i
-        class="i-me:gitee mr-16 cursor-pointer"
-        @click="handleLinkClick('https://gitee.com/isme-admin/vue-naive-admin/tree/2.x')"
-      />
+<!--      <i-->
+<!--        class="i-fe:github mr-16 cursor-pointer"-->
+<!--        @click="handleLinkClick('https://github.com/zclzone/vue-naive-admin/tree/2.x')"-->
+<!--      />-->
+<!--      <i-->
+<!--        class="i-me:gitee mr-16 cursor-pointer"-->
+<!--        @click="handleLinkClick('https://gitee.com/isme-admin/vue-naive-admin/tree/2.x')"-->
+<!--      />-->
 
       <ThemeSetting class="mr-16" />
 
-      <UserAvatar />
+<!--      <UserAvatar />-->
     </div>
   </AppCard>
 </template>
@@ -39,7 +39,7 @@
 import { ToggleTheme } from '@/components'
 import { AppTab, Fullscreen, MenuCollapse, UserAvatar } from '@/layouts/components'
 
-function handleLinkClick(link) {
-  window.open(link)
-}
+// function handleLinkClick(link) {
+//   window.open(link)
+// }
 </script>
