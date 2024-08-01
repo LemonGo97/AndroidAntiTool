@@ -14,24 +14,11 @@ import {defineComponent, ref} from 'vue'
 
 import api from '../api'
 
-api.devices().then(res => {
-  console.log(res)
-})
-
 export default defineComponent({
   setup() {
     return {
       value: ref(null),
-      devices: [
-        {
-          serial: "XiaoMi 8",
-          state: "Device"
-        },
-        {
-          serial: "OPPO R9s",
-          state: "Offline"
-        }
-      ],
+      devices: api.devices(),
     }
   }})
 </script>
