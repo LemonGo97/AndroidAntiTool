@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="android-right p-5 bg-[#f7f8faff] dark:bg-[#26282a]"
-           border="1px solid light_border dark:dark_border">∂∂∂
+           border="1px solid light_border dark:dark_border">
         <right-tool-bar/>
       </div>
     </div>

@@ -4,12 +4,14 @@
     <n-select
       class="w-300"
       :render-label="renderLabel"
+      value-field="serial"
       v-model:value="value"
       :options="devices" />
   </n-flex>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import {defineComponent, ref, VNodeChild} from 'vue'
+import {SelectOption} from "naive-ui";
 
 export default defineComponent({
   setup() {
@@ -26,6 +28,10 @@ export default defineComponent({
         }
       ],
       renderLabel: (option: SelectOption): VNodeChild => {
+        return `${option.serial} (${option.state})`
+      },
+      excee: (option, obj1) => {
+        console.log(option, obj1)
         return `${option.serial} (${option.state})`
       }
     }
