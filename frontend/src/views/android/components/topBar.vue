@@ -3,15 +3,20 @@
     <div class="mr-10">设备选择: </div>
     <n-select
       class="w-300"
-      :render-label="renderLabel"
+      label-field="serial"
       value-field="serial"
       v-model:value="value"
       :options="devices" />
   </n-flex>
 </template>
 <script lang="ts">
-import {defineComponent, ref, VNodeChild} from 'vue'
-import {SelectOption} from "naive-ui";
+import {defineComponent, ref} from 'vue'
+
+import api from '../api'
+
+api.devices().then(res => {
+  console.log(res)
+})
 
 export default defineComponent({
   setup() {
@@ -27,13 +32,6 @@ export default defineComponent({
           state: "Offline"
         }
       ],
-      renderLabel: (option: SelectOption): VNodeChild => {
-        return `${option.serial} (${option.state})`
-      },
-      excee: (option, obj1) => {
-        console.log(option, obj1)
-        return `${option.serial} (${option.state})`
-      }
     }
   }})
 </script>
