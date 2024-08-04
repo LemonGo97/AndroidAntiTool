@@ -33,7 +33,7 @@
     </n-space>
   </n-flex>
 </template>
-<script lang="ts">
+<script>
 import api from '../api'
 
 export default {
@@ -63,7 +63,7 @@ export default {
       await this.refreshDevices()
     },
     selectDevice(value){
-      console.log("===>", value)
+      this.$emit("onDeviceSelected", value)
     }
   }
 }
