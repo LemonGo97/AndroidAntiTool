@@ -25,18 +25,16 @@ public class ApplicationWebMvcConfigurer implements WebMvcConfigurer {
 	}
 
 	@Override
-	public void configureHandlerExceptionResolvers(@NonNull List<HandlerExceptionResolver> resolvers) {
-		resolvers.add(new DefaultHandlerExceptionResolver());
-		resolvers.add((request, response, handler, e) -> {
+	public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+		resolvers.addFirst((request, response, handler, e) -> {
+			if (request.getRequestURI().startsWith(API_BASE_PATH)){
+				return null;
+			}
 			if (e instanceof NoResourceFoundException){
 				return new ModelAndView("forward:/");
 			} else {
-				if (request.getRequestURI().startsWith(API_BASE_PATH)){
-					return null;
-				}
 				return new ModelAndView("forward:/500");
 			}
 		});
 	}
-
 }

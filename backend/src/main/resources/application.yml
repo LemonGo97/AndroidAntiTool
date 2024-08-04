@@ -1,3 +1,5 @@
 spring:
   application:
     name: "android-anti-tools"
+  web:
+    locale: zh_CN

@@ -1,14 +1,17 @@
-package com.lemongo97.android.anti.adb;
+package com.lemongo97.android.anti.adb.controller;
 
+import com.lemongo97.android.anti.adb.model.AndroidDevice;
+import com.lemongo97.android.anti.adb.service.ADBService;
 import com.lemongo97.android.anti.services.SseEmitterService;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import se.vidstige.jadb.ConnectionToRemoteDeviceException;
 import se.vidstige.jadb.JadbConnection;
 import se.vidstige.jadb.JadbDevice;
 import se.vidstige.jadb.JadbException;
@@ -16,29 +19,33 @@ import se.vidstige.jadb.JadbException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
+@Validated
 @RestController
 public class AdbController {
+	private final ADBService adbService;
 	private final JadbConnection jadbConnection;
 	private final SseEmitterService sseEmitterService;
 
-	public AdbController(JadbConnection jadbConnection,
+	public AdbController(ADBService adbService, JadbConnection jadbConnection,
 						 SseEmitterService sseEmitterService) {
+		this.adbService = adbService;
 		this.jadbConnection = jadbConnection;
 		this.sseEmitterService = sseEmitterService;
 	}
 
 	@PostMapping("/connect")
-	public void connect(String host, int port) throws ConnectionToRemoteDeviceException, IOException, JadbException {
-		this.jadbConnection.connectToTcpDevice(new InetSocketAddress(host, port));
+	public void connect(@NotBlank(message = "设备IP不能为空") String host, Integer port) {
+		this.adbService.connect(host, Optional.ofNullable(port).orElse(5555));
 	}
 
 	@GetMapping("/devices")
-	public List<JadbDevice> devices() throws IOException, JadbException {
-		return this.jadbConnection.getDevices();
+	public Collection<AndroidDevice> devices() {
+		return this.adbService.devices();
 	}
 
 	@GetMapping(path = "/logcat", produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
