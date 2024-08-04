@@ -7,7 +7,8 @@
         class="w-300"
         label-field="serial"
         value-field="serial"
-        v-model:value="value"
+        v-model:value="device"
+        @update:value="selectDevice"
         :options="devices"/>
       <n-button @click="refreshDevices">
         <i class="i-fe:refresh-cw mr-4 "/>
@@ -38,9 +39,9 @@ import api from '../api'
 export default {
   data() {
     return {
-      value: undefined,
+      device: "",
       host: "",
-      port: "",
+      port: 5555,
       devices: [],
     }
   },
@@ -60,6 +61,9 @@ export default {
       formData.append("port", this.port)
       await api.connect(formData)
       await this.refreshDevices()
+    },
+    selectDevice(value){
+      console.log("===>", value)
     }
   }
 }
