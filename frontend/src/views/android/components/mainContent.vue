@@ -1,7 +1,7 @@
 <template>
-<div class="h-full p-5 flex flex-col">
+<div class="h-full flex flex-col">
   <div class="h-full">主要内容</div>
-  <div class="bottom flex-1 p-5" v-show="bottomWindowVisible">
+  <div class="bottom flex-1" v-show="bottomWindowVisible">
     <logcat :device="device" v-show="bottomWindowVisible === 'logcat'"/>
     <shell v-show="bottomWindowVisible === 'shell'"/>
   </div>

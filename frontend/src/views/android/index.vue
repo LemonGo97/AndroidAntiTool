@@ -11,7 +11,7 @@
         <left-tool-bar/>
       </div>
       <div class="android-container">
-        <div class="android-main-content p-5 bg-[#ffffff] dark:bg-[#1c1d1f]">
+        <div class="android-main-content bg-[#ffffff] dark:bg-[#1c1d1f]">
           <main-content :device="device" :bottomWindowVisible="bottomWindowVisible"/>
         </div>
         <div class="android-footer bg-[#f7f8faff] dark:bg-[#26282a]"
