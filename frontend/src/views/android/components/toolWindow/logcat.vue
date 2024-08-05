@@ -1,5 +1,5 @@
 <template class="h-full">
-  <n-h6 class="mb-0 pb-5 pt-5 pl-5" prefix="bar" border="1px solid light_border dark:dark_border">
+  <n-h6 class="mb-0 pb-5 pt-5 pl-5 tool-window-title" prefix="bar" border="1px solid light_border dark:dark_border">
     Logcat
   </n-h6>
   <n-space :wrap="false" class="h-full">
@@ -17,7 +17,7 @@
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
+    <n-log class="pr-5" :style="{height: calculateLogcatWindowHeight()}" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
   </n-space>
 </template>
 <script>
@@ -85,6 +85,17 @@ export default {
         return
       }
       this.eventSource.close();
+    },
+    calculateLogcatWindowHeight(){
+      let logNode = document.querySelector('.n-log');
+      if (!logNode) return;
+      let toolWindowTitleNode = document.querySelector('.tool-window-title');
+      return (logNode.parentElement.offsetHeight - toolWindowTitleNode.offsetHeight)+'px';
+    },
+    resize(){
+      let logNode = document.querySelector('.n-log');
+      if (!logNode) return;
+      logNode.style.height = this.calculateLogcatWindowHeight();
     }
   }
 }

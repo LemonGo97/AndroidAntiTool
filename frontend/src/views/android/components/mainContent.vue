@@ -1,13 +1,11 @@
 <template>
-  <n-split direction="vertical" :default-size="0.6">
+  <n-split direction="vertical" :default-size="0.6" @drag-move="resizeLogcat">
     <template #1>
       <div>主要内容</div>
     </template>
     <template #2>
-      <div class="h-full">
-        <logcat :device="device" v-show="true||bottomWindowVisible === 'logcat'"/>
+        <logcat ref="logcat" :device="device" v-show="true||bottomWindowVisible === 'logcat'"/>
         <shell v-show="bottomWindowVisible === 'shell'"/>
-      </div>
     </template>
   </n-split>
 </template>
@@ -42,5 +40,10 @@ export default {
     Logcat,
     Shell
   },
+  methods: {
+    resizeLogcat(){
+      this.$refs.logcat.resize()
+    }
+  }
 }
 </script>
