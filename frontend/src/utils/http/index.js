@@ -28,3 +28,12 @@ export const request = createAxios()
 export const mockRequest = createAxios({
   baseURL: '/mock-api',
 })
+
+export function createEventSource(uri, messageEventListener = () => {}, openEventListener = () => {}, errorEventListener = () => {}) {
+  const url = `${import.meta.env.VITE_AXIOS_BASE_URL}${uri}`;
+  const eventSource = new EventSource(url);
+  eventSource.addEventListener("open", openEventListener);
+  eventSource.addEventListener("error", errorEventListener);
+  eventSource.addEventListener("message", messageEventListener);
+  return eventSource;
+}
