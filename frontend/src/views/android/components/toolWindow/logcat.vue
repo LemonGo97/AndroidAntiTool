@@ -1,7 +1,5 @@
 <template class="h-full">
-  <n-h6 class="mb-0 pb-5 pt-5 pl-5 tool-window-title" prefix="bar" border="1px solid light_border dark:dark_border">
-    Logcat
-  </n-h6>
+
   <n-space :wrap="false" class="h-full">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
       <n-button size="small" @click="scrollTo('top',true, false)">
@@ -17,12 +15,13 @@
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <n-log class="pr-5" :style="{height: calculateLogcatWindowHeight()}" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
+    <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
   </n-space>
 </template>
 <script>
 import {createEventSource} from "@/utils/index.js";
 import hljs from "highlight.js";
+
 export default {
   props: {
     device: {
@@ -44,7 +43,7 @@ export default {
     device: {
       immediate: true,
       handler(newVal, oldVal) {
-        if (!newVal||newVal === oldVal){
+        if (!newVal || newVal === oldVal) {
           return
         }
         this.clean()
@@ -53,7 +52,7 @@ export default {
       }
     },
     lines: {
-      deep:true,
+      deep: true,
       immediate: true,
       handler(newVal) {
         if (newVal.length > 0 && this.autoScrollToBottom) {
@@ -67,35 +66,36 @@ export default {
   methods: {
     scrollTo(position, silent, autoScrollToBottom) {
       this.autoScrollToBottom = autoScrollToBottom;
-      this.$refs.logInst.scrollTo({position: position, silent: silent});
+      nextTick(() => {
+        this.$refs.logInst.scrollTo({position: position, silent: silent});
+      });
     },
-    clean(){
+    clean() {
       this.lines = []
     },
-    subscribe(device){
-      this.eventSource = createEventSource(`/logcat?serial=${device}`, (e)=>{
-        if (this.lines.length > this.bufferSize){
+    subscribe(device) {
+      this.eventSource = createEventSource(`/logcat?serial=${device}`, (e) => {
+        if (this.lines.length > this.bufferSize) {
           this.lines.shift();
         }
         this.lines.push(e.data)
       })
     },
-    unsubscribe(device){
-      if (!this.eventSource){
+    unsubscribe(device) {
+      if (!this.eventSource) {
         return
       }
       this.eventSource.close();
     },
-    calculateLogcatWindowHeight(){
+    resize() {
       let logNode = document.querySelector('.n-log');
       if (!logNode) return;
-      let toolWindowTitleNode = document.querySelector('.tool-window-title');
-      return (logNode.parentElement.offsetHeight - toolWindowTitleNode.offsetHeight)+'px';
-    },
-    resize(){
-      let logNode = document.querySelector('.n-log');
-      if (!logNode) return;
-      logNode.style.height = this.calculateLogcatWindowHeight();
+      logNode.style.height = logNode.parentElement.offsetHeight + 'px';
+      if (this.autoScrollToBottom) {
+        nextTick(() => {
+          this.$refs.logInst.scrollTo({position: "bottom", silent: true});
+        });
+      }
     }
   }
 }
