@@ -23,6 +23,9 @@ importers:
       echarts:
         specifier: ^5.5.1
         version: 5.5.1
+      highlight.js:
+        specifier: ^11.10.0
+        version: 11.10.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21

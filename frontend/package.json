@@ -17,6 +17,7 @@
     "axios": "^1.7.2",
     "dayjs": "^1.11.12",
     "echarts": "^5.5.1",
+    "highlight.js": "^11.10.0",
     "lodash-es": "^4.17.21",
     "naive-ui": "^2.39.0",
     "pinia": "^2.2.0",
