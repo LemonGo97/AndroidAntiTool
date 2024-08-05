@@ -3,3 +3,5 @@ spring:
     name: "android-anti-tools"
   web:
     locale: zh_CN
+  websocket:
+    prefix: "/api"
