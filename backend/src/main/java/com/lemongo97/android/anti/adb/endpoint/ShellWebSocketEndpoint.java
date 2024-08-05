@@ -100,11 +100,17 @@ public class ShellWebSocketEndpoint extends AbstractWebSocketEndpoint {
 		this.closeSession(session, null);
 	}
 
-	private void closeSession(WebSocketSession session, CloseStatus status) throws IOException {
+	private void closeSession(WebSocketSession session, CloseStatus status) {
 		String sessionId = session.getId();
-		sessions.remove(sessionId);
-		sessionParams.remove(sessionId);
-		session.close(Optional.ofNullable(status).orElse(CloseStatus.NOT_ACCEPTABLE));
+		try{
+			session.close(Optional.ofNullable(status).orElse(CloseStatus.NOT_ACCEPTABLE));
+		}catch (Exception e){
+			log.error("Error closing websocket session", e);
+		}finally {
+			sessions.remove(sessionId);
+			sessionParams.remove(sessionId);
+			sessionDeviceMap.remove(sessionId);
+		}
 	}
 
 	interface Params{
