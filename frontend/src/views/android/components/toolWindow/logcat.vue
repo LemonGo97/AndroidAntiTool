@@ -1,9 +1,8 @@
-<template>
-<div>
+<template class="h-full">
   <n-h6 class="mb-0 pb-5 pt-5 pl-5" prefix="bar" border="1px solid light_border dark:dark_border">
     Logcat
   </n-h6>
-  <n-space :wrap="false">
+  <n-space :wrap="false" class="h-full">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
       <n-button size="small" @click="scrollTo('top',true, false)">
         <i class="i-fe:arrow-up"/>
@@ -20,7 +19,6 @@
     </n-button-group>
     <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
   </n-space>
-</div>
 </template>
 <script>
 import {createEventSource} from "@/utils/index.js";

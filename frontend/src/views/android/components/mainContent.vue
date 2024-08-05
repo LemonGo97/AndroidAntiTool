@@ -1,11 +1,15 @@
 <template>
-<div class="h-full flex flex-col">
-  <div class="h-full">主要内容</div>
-  <div class="bottom flex-1" v-show="bottomWindowVisible">
-    <logcat :device="device" v-show="bottomWindowVisible === 'logcat'"/>
-    <shell v-show="bottomWindowVisible === 'shell'"/>
-  </div>
-</div>
+  <n-split direction="vertical" :default-size="0.6">
+    <template #1>
+      <div>主要内容</div>
+    </template>
+    <template #2>
+      <div class="h-full">
+        <logcat :device="device" v-show="true||bottomWindowVisible === 'logcat'"/>
+        <shell v-show="bottomWindowVisible === 'shell'"/>
+      </div>
+    </template>
+  </n-split>
 </template>
 <script>
 import Logcat from './toolWindow/logcat.vue'
