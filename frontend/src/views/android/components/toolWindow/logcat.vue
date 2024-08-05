@@ -18,7 +18,7 @@
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="naive-log" trim/>
+    <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
   </n-space>
 </div>
 </template>
