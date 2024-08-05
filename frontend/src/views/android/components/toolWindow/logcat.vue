@@ -1,6 +1,5 @@
 <template class="h-full">
-
-  <n-space :wrap="false" class="h-full">
+  <n-flex :wrap="false" class="h-full" style="column-gap: 5px">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
       <n-button size="small" @click="scrollTo('top',true, false)">
         <i class="i-fe:arrow-up"/>
@@ -15,8 +14,8 @@
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <n-log class="pr-5" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
-  </n-space>
+    <n-log class="pr-5 flex-1" :style="{height: calculateLogcatWindowHeight()}" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
+  </n-flex>
 </template>
 <script>
 import {createEventSource} from "@/utils/index.js";
@@ -86,6 +85,11 @@ export default {
         return
       }
       this.eventSource.close();
+    },
+    calculateLogcatWindowHeight(){
+      let logNode = document.querySelector('.n-log');
+      if (!logNode) return '263px';
+      return (logNode.parentElement.offsetHeight)+'px';
     },
     resize() {
       let logNode = document.querySelector('.n-log');
