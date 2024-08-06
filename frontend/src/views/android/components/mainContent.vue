@@ -10,7 +10,7 @@
     </template>
     <template #2>
         <logcat ref="logcat" :device="device" :visible="bottomWindowVisible === 'logcat'" v-show="bottomWindowVisible === 'logcat'"/>
-        <shell v-show="bottomWindowVisible === 'shell'"/>
+        <shell ref="shell" :device="device" :visible="bottomWindowVisible === 'shell'" v-show="bottomWindowVisible === 'shell'"/>
     </template>
   </n-split>
 </template>
