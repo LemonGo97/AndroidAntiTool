@@ -14,7 +14,9 @@
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <n-log class="pr-5 flex-1" :style="{height: calculateLogcatWindowHeight()}" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
+    <div class="h-full">
+      <n-log class="pr-5 flex-1" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
+    </div>
   </n-flex>
 </template>
 <script>
@@ -26,7 +28,11 @@ export default {
     device: {
       type: String,
       default: () => ""
-    }
+    },
+    visible: {
+      type: Boolean,
+      default: () => false
+    },
   },
   data() {
     return {
@@ -39,6 +45,14 @@ export default {
     }
   },
   watch: {
+    visible:{
+      immediate: true,
+      handler(newVal) {
+        nextTick(() => {
+          this.resize()
+        });
+      }
+    },
     device: {
       immediate: true,
       handler(newVal, oldVal) {
@@ -86,14 +100,9 @@ export default {
       }
       this.eventSource.close();
     },
-    calculateLogcatWindowHeight(){
-      let logNode = document.querySelector('.n-log');
-      if (!logNode) return '263px';
-      return (logNode.parentElement.offsetHeight)+'px';
-    },
     resize() {
-      let logNode = document.querySelector('.n-log');
-      if (!logNode) return;
+      if (!this.$refs.logInst) return;
+      let logNode = this.$refs.logInst.$el;
       logNode.style.height = logNode.parentElement.offsetHeight + 'px';
       if (this.autoScrollToBottom) {
         nextTick(() => {

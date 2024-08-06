@@ -1,5 +1,5 @@
 <template>
-  <n-split direction="vertical" :disabled="bottomWindowVisible === ''" resize-trigger-size="38" :default-size="0.6" @drag-end="resizeLogcat">
+  <n-split direction="vertical" :disabled="bottomWindowVisible === ''" resize-trigger-size="38" :default-size="0.5" @drag-end="resizeLogcat">
     <template #1>
       <div>主要内容</div>
     </template>
@@ -9,7 +9,7 @@
       </n-h6>
     </template>
     <template #2>
-        <logcat ref="logcat" :device="device" v-show="bottomWindowVisible === 'logcat'"/>
+        <logcat ref="logcat" :device="device" :visible="bottomWindowVisible === 'logcat'" v-show="bottomWindowVisible === 'logcat'"/>
         <shell v-show="bottomWindowVisible === 'shell'"/>
     </template>
   </n-split>
