@@ -93,6 +93,10 @@ export default {
   mounted() {
     this.setupTerminal()
   },
+  beforeUnmount() {
+    console.log("关闭websocket")
+    this.closeWebSocket()
+  },
   methods: {
     setupWebSocket(device) {
       if (!device) return;

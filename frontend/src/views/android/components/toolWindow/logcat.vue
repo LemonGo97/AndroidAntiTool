@@ -55,6 +55,10 @@ export default {
       default: () => false
     },
   },
+  beforeUnmount() {
+    console.log("关闭SSE")
+    this.unsubscribe()
+  },
   data() {
     return {
       lines: [],
@@ -133,12 +137,4 @@ export default {
     }
   }
 }
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
 </script>
