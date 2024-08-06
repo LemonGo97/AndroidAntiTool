@@ -17,4 +17,10 @@ public class ADBStreamMessageHandler extends SimpleChannelInboundHandler<CharSeq
 	protected void channelRead0(ChannelHandlerContext ctx, CharSequence msg) throws Exception {
 		this.webSocketSession.sendMessage(new TextMessage(msg));
 	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		this.webSocketSession.close();
+		super.channelInactive(ctx);
+	}
 }
