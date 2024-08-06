@@ -1,25 +1,57 @@
 <template class="h-full">
   <n-flex :wrap="false" class="h-full" style="column-gap: 5px">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
-      <n-button size="small">
-        <i class="i-fe:arrow-up" @click="scrollTerminalToTop"/>
-      </n-button>
-      <n-button size="small">
-        <i class="i-fe:arrow-down" @click="scrollTerminalToBottom"/>
-      </n-button>
-      <n-button size="small" @click="clearTerminalScreen">
-        <i class="i-fe:trash-2"/>
-      </n-button>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="reconnect">
+            <i class="i-fe:repeat"/>
+          </n-button>
+        </template>
+        重新连接
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="closeWebSocket">
+            <i class="i-fe:square"/>
+          </n-button>
+        </template>
+        断开连接
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small">
+            <i class="i-fe:arrow-up" @click="scrollTerminalToTop"/>
+          </n-button>
+        </template>
+        滚动到最上
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small">
+            <i class="i-fe:arrow-down" @click="scrollTerminalToBottom"/>
+          </n-button>
+        </template>
+        滚动到最后
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="clearTerminalScreen">
+            <i class="i-fe:trash-2"/>
+          </n-button>
+        </template>
+        清除屏幕
+      </n-tooltip>
     </n-button-group>
     <div id="terminal" ref="terminal" class="h-full w-full">
     </div>
   </n-flex>
 </template>
 <script>
-import { Terminal } from '@xterm/xterm';
-import { FitAddon } from '@xterm/addon-fit';
+import {Terminal} from '@xterm/xterm';
+import {FitAddon} from '@xterm/addon-fit';
 import {createWebSocket} from "@/utils/index.js";
 import "@xterm/xterm/css/xterm.css"
+
 export default {
   props: {
     device: {
@@ -49,7 +81,7 @@ export default {
         this.setupWebSocket(newVal)
       }
     },
-    visible:{
+    visible: {
       immediate: true,
       handler(newVal) {
         nextTick(() => {
@@ -62,19 +94,19 @@ export default {
     this.setupTerminal()
   },
   methods: {
-    setupWebSocket(device){
-      if(!device) return;
+    setupWebSocket(device) {
+      if (!device) return;
       this.websocket = createWebSocket("/shell?device=" + device)
       this.websocket.onmessage = (e) => {
         this.terminal.write(e.data)
       }
       this.websocket.onclose = (e) => {
         console.log("websocket closed")
-        this.clearTerminalScreen()
+        this.resetTerminalScreen()
         this.terminal.write("this connection closed...")
       }
     },
-    setupTerminal(){
+    setupTerminal() {
       this.terminal = new Terminal({
         rendererType: "canvas",
         disableStdin: false,
@@ -94,24 +126,39 @@ export default {
         this.websocket.send(input)
       })
     },
-    closeWebSocket(){
-      if (!this.websocket || this.websocket.readyState !== WebSocket.CLOSED) {
+    closeWebSocket() {
+      this.resetTerminalScreen()
+      if (!this.websocket) {
         return
       }
       this.websocket.close()
-      this.clearTerminalScreen()
+      this.resetTerminalScreen()
     },
-    clearTerminalScreen(){
+    clearTerminalScreen() {
       if (!this.terminal) return
       this.terminal.clear()
     },
-    scrollTerminalToTop(){
+    resetTerminalScreen() {
+      if (!this.terminal) return
+      this.terminal.reset()
+    },
+    scrollTerminalToTop() {
       this.terminal.scrollToTop();
     },
-    scrollTerminalToBottom(){
+    scrollTerminalToBottom() {
       this.terminal.scrollToBottom();
     },
-    resize(){
+    reconnect() {
+      if (this.websocket && this.websocket.readyState !== WebSocket.CLOSED) {
+        this.closeWebSocket()
+      }
+      if (!this.device) {
+        $message.warning('请选择待操作的设备！')
+        return
+      }
+      this.setupWebSocket(this.device);
+    },
+    resize() {
       if (!this.terminal) return;
       this.terminalAddon.fit();
       this.terminal.scrollToBottom();

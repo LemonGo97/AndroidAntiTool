@@ -1,18 +1,39 @@
 <template class="h-full">
   <n-flex :wrap="false" class="h-full" style="column-gap: 5px">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
-      <n-button size="small" @click="scrollTo('top',true, false)">
-        <i class="i-fe:arrow-up"/>
-      </n-button>
-      <n-button size="small" @click="scrollTo('bottom',true, false)">
-        <i class="i-fe:arrow-down"/>
-      </n-button>
-      <n-button size="small" @click="scrollTo('bottom',true, true)">
-        <i class="i-fe:chevrons-down"/>
-      </n-button>
-      <n-button size="small" @click="clean">
-        <i class="i-fe:trash-2"/>
-      </n-button>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="scrollTo('top',true, false)">
+            <i class="i-fe:arrow-up"/>
+          </n-button>
+        </template>
+        滚动到最上
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="scrollTo('bottom',true, false)">
+            <i class="i-fe:arrow-down"/>
+          </n-button>
+        </template>
+        滚动到最后
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="scrollTo('bottom',true, true)">
+            <i class="i-fe:chevrons-down"/>
+          </n-button>
+        </template>
+        日志追随
+      </n-tooltip>
+      <n-tooltip>
+        <template #trigger>
+          <n-button size="small" @click="clean">
+            <i class="i-fe:trash-2"/>
+          </n-button>
+        </template>
+        清除屏幕
+      </n-tooltip>
+
     </n-button-group>
     <div class="h-full">
       <n-log class="pr-5 flex-1" ref="logInst" :hljs="hljs" :rows="rows" :lines="lines" language="console" trim/>
@@ -45,7 +66,7 @@ export default {
     }
   },
   watch: {
-    visible:{
+    visible: {
       immediate: true,
       handler(newVal) {
         nextTick(() => {
@@ -112,4 +133,12 @@ export default {
     }
   }
 }
+</script>
+<script setup lang="ts">
+</script>
+<script setup lang="ts">
+</script>
+<script setup lang="ts">
+</script>
+<script setup lang="ts">
 </script>
