@@ -1,5 +1,6 @@
 package com.lemongo97.android.anti.adb.endpoint;
 
+import com.lemongo97.android.anti.adb.client.stream.ADBStreamClient;
 import com.lemongo97.android.anti.annotation.WebSocketEndpoint;
 import com.lemongo97.android.anti.services.AbstractWebSocketEndpoint;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +13,11 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import se.vidstige.jadb.ADBTransport;
 import se.vidstige.jadb.JadbConnection;
 import se.vidstige.jadb.JadbDevice;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,6 +45,7 @@ public class ShellWebSocketEndpoint extends AbstractWebSocketEndpoint {
 	 * <p>v -> 连接的设备
 	 */
 	private final static ConcurrentHashMap<String, JadbDevice> sessionDeviceMap = new ConcurrentHashMap<>();
+	private final static ConcurrentHashMap<String, ADBStreamClient> sessionADBStreamClientMap = new ConcurrentHashMap<>();
 
 	public ShellWebSocketEndpoint(JadbConnection jadbConnection) {
 		this.jadbConnection = jadbConnection;
@@ -62,23 +63,32 @@ public class ShellWebSocketEndpoint extends AbstractWebSocketEndpoint {
 			this.closeSession(session);
 			return;
 		}
-		Optional<JadbDevice> jadbDevice = this.jadbConnection.getDevices()
+		Optional<JadbDevice> jadbDeviceOptional = this.jadbConnection.getDevices()
 				.stream()
 				.filter(device -> device.getSerial().equals(deviceSerial))
 				.findFirst();
-		if (jadbDevice.isEmpty()) {
+		if (jadbDeviceOptional.isEmpty()) {
 			this.closeSession(session);
 			return;
 		}
-		sessionDeviceMap.put(sessionId, jadbDevice.get());
+		JadbDevice jadbDevice = jadbDeviceOptional.get();
+		sessionDeviceMap.put(sessionId, jadbDevice);
 		log.info("Connecting to device {}", deviceSerial);
-		// todo 连接真正的adb shell
+
+		// 连接真正的adb shell
+		ADBStreamClient adbStreamClient = new ADBStreamClient(session, deviceSerial);
+		sessionADBStreamClientMap.put(sessionId, adbStreamClient);
+		adbStreamClient.connect();
+		log.info("Connected device {}", deviceSerial);
 	}
 
 	@Override
 	public void onTextMessage(WebSocketSession session, TextMessage message) {
 		// todo 完成Shell
 		log.debug("onTextMessage: {}", message.getPayload());
+		String sessionId = session.getId();
+		ADBStreamClient adbStreamClient = sessionADBStreamClientMap.get(sessionId);
+		adbStreamClient.send(message.getPayload());
 	}
 
 	@Override
@@ -104,12 +114,15 @@ public class ShellWebSocketEndpoint extends AbstractWebSocketEndpoint {
 		String sessionId = session.getId();
 		try{
 			session.close(Optional.ofNullable(status).orElse(CloseStatus.NOT_ACCEPTABLE));
+			ADBStreamClient adbStreamClient = sessionADBStreamClientMap.get(sessionId);
+			adbStreamClient.disconnect();
 		}catch (Exception e){
 			log.error("Error closing websocket session", e);
 		}finally {
 			sessions.remove(sessionId);
 			sessionParams.remove(sessionId);
 			sessionDeviceMap.remove(sessionId);
+			sessionADBStreamClientMap.remove(sessionId);
 		}
 	}
 
