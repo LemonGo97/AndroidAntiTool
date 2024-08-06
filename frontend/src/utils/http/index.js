@@ -8,7 +8,7 @@
  **********************************/
 
 import axios from 'axios'
-import { setupInterceptors } from './interceptors'
+import {setupInterceptors} from './interceptors'
 
 export function createAxios(options = {}) {
   const defaultOptions = {
@@ -36,4 +36,9 @@ export function createEventSource(uri, messageEventListener = () => {}, openEven
   eventSource.addEventListener("error", errorEventListener);
   eventSource.addEventListener("message", messageEventListener);
   return eventSource;
+}
+
+export function createWebSocket(uri){
+  const url = `${import.meta.env.VITE_WEBSOCKET_BASE_URL}${uri}`;
+  return new WebSocket(url);
 }
