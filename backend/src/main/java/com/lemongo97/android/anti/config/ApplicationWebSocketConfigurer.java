@@ -31,10 +31,10 @@ public class ApplicationWebSocketConfigurer implements WebSocketConfigurer {
 				continue;
 			}
 			if (!StringUtils.hasText(prefix) || "/".equals(prefix)) {
-				registry.addHandler(endpoint, uris);
+				registry.addHandler(endpoint, uris).setAllowedOrigins("*");
 				continue;
 			}
-			registry.addHandler(endpoint, StringUtils.toStringArray(Arrays.stream(uris).map(uri -> prefix + uri).toList()));
+			registry.addHandler(endpoint, StringUtils.toStringArray(Arrays.stream(uris).map(uri -> prefix + uri).toList())).setAllowedOrigins("*");
 		}
 	}
 

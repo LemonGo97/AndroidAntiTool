@@ -68,7 +68,7 @@ public class ADBStreamClient {
 			return;
 		}
 		ByteBuf buffer = channelFuture.channel().alloc().buffer();
-		buffer.writeCharSequence(command + '\n', StandardCharsets.UTF_8);
+		buffer.writeCharSequence(command, StandardCharsets.UTF_8);
 		this.channelFuture.channel().writeAndFlush(buffer);
 	}
 

@@ -4,4 +4,4 @@ spring:
   web:
     locale: zh_CN
   websocket:
-    prefix: "/api"
+    prefix: "/websocket"
