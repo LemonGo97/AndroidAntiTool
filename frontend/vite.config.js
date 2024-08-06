@@ -19,7 +19,7 @@ import { pluginIcons, pluginPagePathes } from './config/plugin-isme'
 
 export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, process.cwd())
-  const { VITE_PUBLIC_PATH, VITE_PROXY_TARGET } = viteEnv
+  const { VITE_PUBLIC_PATH, VITE_PROXY_TARGET, VITE_WEBSOCKET_PROXY_TARGET } = viteEnv
 
   return {
     base: VITE_PUBLIC_PATH || '/',
@@ -64,6 +64,13 @@ export default defineConfig(({ mode }) => {
               proxyRes.headers['x-real-url'] = new URL(req.url || '', options.target)?.href || ''
             })
           },
+        },
+        '/websocket': {
+          target: VITE_WEBSOCKET_PROXY_TARGET,
+          rewrite: path => path.replace(/^\/websocket/, ''),
+          changeOrigin: true,
+          secure: false,
+          ws: true,
         },
       },
     },
