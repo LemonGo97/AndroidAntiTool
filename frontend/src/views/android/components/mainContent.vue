@@ -1,5 +1,5 @@
 <template>
-  <n-split direction="vertical" :disabled="bottomWindowVisible === ''" resize-trigger-size="38" :default-size="0.5" @drag-end="resizeLogcat">
+  <n-split direction="vertical" :disabled="bottomWindowVisible === ''" :resize-trigger-size="38" :default-size="0.5" @drag-end="resizeLogcat">
     <template #1>
       <div>主要内容</div>
     </template>
