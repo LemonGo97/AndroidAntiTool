@@ -2,10 +2,16 @@
   <n-flex :wrap="false" class="h-full" style="column-gap: 5px">
     <n-button-group class="pl-1 pr-1 h-full" vertical border="1px solid light_border dark:dark_border">
       <n-button size="small">
+        <i class="i-fe:arrow-up" @click="scrollTerminalToTop"/>
+      </n-button>
+      <n-button size="small">
+        <i class="i-fe:arrow-down" @click="scrollTerminalToBottom"/>
+      </n-button>
+      <n-button size="small" @click="clearTerminalScreen">
         <i class="i-fe:trash-2"/>
       </n-button>
     </n-button-group>
-    <div id="terminal" ref="terminal" class="h-full">
+    <div id="terminal" ref="terminal" class="h-full w-full">
     </div>
   </n-flex>
 </template>
@@ -43,6 +49,14 @@ export default {
         this.setupWebSocket(newVal)
       }
     },
+    visible:{
+      immediate: true,
+      handler(newVal) {
+        nextTick(() => {
+          this.resize()
+        });
+      }
+    },
   },
   mounted() {
     this.setupTerminal()
@@ -53,6 +67,11 @@ export default {
       this.websocket = createWebSocket("/shell?device=" + device)
       this.websocket.onmessage = (e) => {
         this.terminal.write(e.data)
+      }
+      this.websocket.onclose = (e) => {
+        console.log("websocket closed")
+        this.clearTerminalScreen()
+        this.terminal.write("this connection closed...")
       }
     },
     setupTerminal(){
@@ -66,14 +85,7 @@ export default {
       this.terminal.open(this.$refs.terminal)
       this.terminalAddon.fit()
 
-      window.addEventListener("resize", resizeScreen)
-      function resizeScreen() {
-        try {
-          this.terminalAddon.fit()
-        } catch (e) {
-          console.log("e", e.message)
-        }
-      }
+      window.addEventListener("resize", () => this.resize())
       this.setupWebSocket(this.device);
       this.terminal.onData(input => {
         if (!this.websocket || this.websocket.readyState !== WebSocket.OPEN) {
@@ -87,6 +99,22 @@ export default {
         return
       }
       this.websocket.close()
+      this.clearTerminalScreen()
+    },
+    clearTerminalScreen(){
+      if (!this.terminal) return
+      this.terminal.clear()
+    },
+    scrollTerminalToTop(){
+      this.terminal.scrollToTop();
+    },
+    scrollTerminalToBottom(){
+      this.terminal.scrollToBottom();
+    },
+    resize(){
+      if (!this.terminal) return;
+      this.terminalAddon.fit();
+      this.terminal.scrollToBottom();
     }
   }
 }

@@ -48,6 +48,7 @@ export default {
   methods: {
     resizeLogcat(){
       this.$refs.logcat.resize()
+      this.$refs.shell.resize()
     }
   }
 }
