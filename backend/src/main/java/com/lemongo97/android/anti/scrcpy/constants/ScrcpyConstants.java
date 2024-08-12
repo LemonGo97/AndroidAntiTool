@@ -1,8 +1,9 @@
-package com.lemongo97.android.anti.scrcpy;
+package com.lemongo97.android.anti.scrcpy.constants;
 
 import io.netty.util.AttributeKey;
 
 public interface ScrcpyConstants {
+	AttributeKey<Boolean> FORWARD= AttributeKey.valueOf("FORWARD");
 	AttributeKey<Boolean> DEVICE_NAME= AttributeKey.valueOf("DEVICE_NAME");
 	AttributeKey<Boolean> VIDEO_HEADER= AttributeKey.valueOf("VIDEO_HEADER");
 	AttributeKey<Boolean> AUDIO_HEADER = AttributeKey.valueOf("AUDIO_HEADER");

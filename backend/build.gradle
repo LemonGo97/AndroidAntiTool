@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.github.vidstige:jadb:v1.2.1'
     implementation 'org.dromara.hutool:hutool-core:6.0.0-M14'
     implementation 'io.netty:netty-all:4.1.112.Final'
+    implementation 'com.google.code.gson:gson:2.11.0'
 
 }
 

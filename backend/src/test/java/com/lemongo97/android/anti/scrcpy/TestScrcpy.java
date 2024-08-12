@@ -1,24 +1,31 @@
 package com.lemongo97.android.anti.scrcpy;
 
+import com.google.gson.Gson;
 import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyDeviceInfoPacket;
+import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyMediaPacket;
 import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyVideoMetaDataPacket;
-import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyVideoPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+@SpringBootTest
 public class TestScrcpy {
 
 	private static final String deviceInfoPacketFilePath = "scrcpy/deviceInfoPacket.bin";
 	private static final String videoConfigFramePacketFilePath = "scrcpy/video/videoConfigFramePacket.bin";
 	private static final String videoKeyFramePacketFilePath = "scrcpy/video/videoKeyFramePacket.bin";
 	private static final String videoMetaDataPacketFilePath = "scrcpy/video/videoMetaDataPacket.bin";
+
+	@Autowired
+	private Gson gson;
 
 	@Test
 	public void testDeviceInfoPacketParse() throws IOException {
@@ -41,19 +48,20 @@ public class TestScrcpy {
 	@Test
 	public void testVideoConfigFramePacketParse() throws IOException {
 		ByteBuf packetBytebuf = this.getFileByteBuf(videoConfigFramePacketFilePath);
-		ScrcpyVideoPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyVideoPacket(packetBytebuf));
+		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf));
 		Assertions.assertNotNull(packet);
 		Assertions.assertTrue(packet.isConfigPacket());
 		Assertions.assertFalse(packet.isKeyFramePacket());
 		Assertions.assertNull(packet.getPts());
 		Assertions.assertEquals(32, packet.getLength());
 		Assertions.assertEquals(32, packet.getFrame().readableBytes());
+		System.out.println(this.gson.toJson(packet));
 	}
 
 	@Test
 	public void testVideoKeyFramePacketParse() throws IOException {
 		ByteBuf packetBytebuf = this.getFileByteBuf(videoKeyFramePacketFilePath);
-		ScrcpyVideoPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyVideoPacket(packetBytebuf));
+		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf));
 		Assertions.assertNotNull(packet);
 		Assertions.assertFalse(packet.isConfigPacket());
 		Assertions.assertTrue(packet.isKeyFramePacket());

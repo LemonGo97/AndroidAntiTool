@@ -1,5 +1,11 @@
-package com.lemongo97.android.anti.scrcpy;
+package com.lemongo97.android.anti.scrcpy.codec;
 
+import com.lemongo97.android.anti.scrcpy.*;
+import com.lemongo97.android.anti.scrcpy.codec.packet.*;
+import com.lemongo97.android.anti.scrcpy.constants.ScrcpyConstants;
+import com.lemongo97.android.anti.scrcpy.constants.ScrcpyMode;
+import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
+import com.lemongo97.android.anti.scrcpy.constants.ScrcpySocketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -8,21 +14,31 @@ import io.netty.util.Attribute;
 import java.util.List;
 import java.util.Optional;
 
-import static com.lemongo97.android.anti.scrcpy.ScrcpyConstants.*;
+import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyConstants.*;
 
 /**
  * Scrcpy 协议解析
  */
-public class ScrcpyProtocolHandler extends ByteToMessageDecoder {
+public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 
 	private final ScrcpySocketType socketType;
 
-	public ScrcpyProtocolHandler(ScrcpySocketType socketType) {
+	public ScrcpyProtocolDecoder(ScrcpyMode scrcpyMode, ScrcpySocketType socketType) {
 		this.socketType = socketType;
 	}
 
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+
+		Attribute<Boolean> FORWARD = channelHandlerContext.channel().attr(ScrcpyConstants.FORWARD);
+		if (!Optional.ofNullable(FORWARD.get()).orElse(false)) {
+			if (byteBuf.readableBytes() < 1){
+				return;
+			}
+			FORWARD.set(true);
+			list.add(new ScrcpyModePacket(byteBuf));
+			return;
+		}
 
 		Attribute<Boolean> DEVICE_NAME = channelHandlerContext.channel().attr(ScrcpyConstants.DEVICE_NAME);
 
@@ -32,7 +48,7 @@ public class ScrcpyProtocolHandler extends ByteToMessageDecoder {
 				return;
 			}
 			DEVICE_NAME.set(true);
-			list.add(new ScrcpyPacket(ScrcpyPacketType.DEVICE_NAME, byteBuf.readBytes(DEVICE_NAME_LENGTH)));
+			list.add(new ScrcpyDeviceInfoPacket(byteBuf));
 			return;
 		}
 
@@ -50,7 +66,7 @@ public class ScrcpyProtocolHandler extends ByteToMessageDecoder {
 				return;
 			}
 			VIDEO_HEADER.set(true);
-			list.add(new ScrcpyPacket(ScrcpyPacketType.VIDEO_HEADER, byteBuf.readBytes(VIDEO_HEADER_LENGTH)));
+			list.add(new ScrcpyVideoMetaDataPacket(byteBuf));
 			return;
 		}
 		this.handleMediaSocket(byteBuf, list);
@@ -63,7 +79,7 @@ public class ScrcpyProtocolHandler extends ByteToMessageDecoder {
 				return;
 			}
 			AUDIO_HEADER.set(true);
-			list.add(new ScrcpyPacket(ScrcpyPacketType.AUDIO_HEADER, byteBuf.readBytes(AUDIO_HEADER_LENGTH)));
+			list.add(new ScrcpyAudioMetaDataPacket(byteBuf));
 			return;
 		}
 		this.handleMediaSocket(byteBuf, list);
@@ -77,7 +93,7 @@ public class ScrcpyProtocolHandler extends ByteToMessageDecoder {
 		if (byteBuf.readableBytes() < length + MEDIA_FRAME_HEADER_LENGTH) {
 			return;
 		}
-		list.add(new ScrcpyPacket(ScrcpyPacketType.VIDEO_FRAME, byteBuf.readBytes(length + MEDIA_FRAME_HEADER_LENGTH)));
+		list.add(new ScrcpyMediaPacket(byteBuf));
 	}
 
 	/**
