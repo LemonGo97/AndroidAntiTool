@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@arco-design/color": "^0.4.0",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
     "@vueuse/core": "^10.11.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",

@@ -11,6 +11,9 @@ importers:
       '@arco-design/color':
         specifier: ^0.4.0
         version: 0.4.0
+      '@vitejs/plugin-basic-ssl':
+        specifier: ^1.1.0
+        version: 1.1.0(vite@5.3.5(sass@1.77.8))
       '@vueuse/core':
         specifier: ^10.11.0
         version: 10.11.0(vue@3.4.34(typescript@5.5.3))
@@ -1184,6 +1187,12 @@ packages:
     resolution: {integrity: sha512-Q9vFhSacuWp5rlcG0II4Gahrq9XS3uMiV/ZDHp1ILuoURmTojHI67awwSzl0xjzRPBwvHG4FnPE3KvSa5U7ulA==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0
+
+  '@vitejs/plugin-basic-ssl@1.1.0':
+    resolution: {integrity: sha512-wO4Dk/rm8u7RNhOf95ZzcEmC9rYOncYgvq4z3duaJrCgjN8BxAnDVyndanfcJZ0O6XZzHz6Q0hTimxTg8Y9g/A==}
+    engines: {node: '>=14.6.0'}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
 
   '@vitejs/plugin-vue@5.1.1':
     resolution: {integrity: sha512-sDckXxlHpMsjRQbAH9WanangrfrblsOd3pNifePs+FOHjJg1jfWq5L/P0PsBRndEt3nmdUnmvieP8ULDeX5AvA==}
@@ -4540,6 +4549,10 @@ snapshots:
       vite: 5.3.5(sass@1.77.8)
     transitivePeerDependencies:
       - rollup
+
+  '@vitejs/plugin-basic-ssl@1.1.0(vite@5.3.5(sass@1.77.8))':
+    dependencies:
+      vite: 5.3.5(sass@1.77.8)
 
   '@vitejs/plugin-vue@5.1.1(vite@5.3.5(sass@1.77.8))(vue@3.4.34(typescript@5.5.3))':
     dependencies:

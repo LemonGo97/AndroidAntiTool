@@ -16,6 +16,7 @@ import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import removeNoMatch from 'vite-plugin-router-warn'
 import { pluginIcons, pluginPagePathes } from './config/plugin-isme'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, process.cwd())
@@ -41,6 +42,7 @@ export default defineConfig(({ mode }) => {
       pluginIcons(),
       // 移除非必要的vue-router动态路由警告: No match found for location with path
       removeNoMatch(),
+      basicSsl(),
     ],
     resolve: {
       alias: {
@@ -52,6 +54,7 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: 3200,
       open: false,
+      https: true,
       proxy: {
         '/api': {
           target: VITE_PROXY_TARGET,
