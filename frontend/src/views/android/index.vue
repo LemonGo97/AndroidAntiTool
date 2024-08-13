@@ -8,7 +8,7 @@
       </div>
       <div class="android-left p-5 bg-[#f7f8faff] dark:bg-[#26282a]"
            border="1px solid light_border dark:dark_border">
-        <left-tool-bar/>
+        <left-tool-bar :device="device"/>
       </div>
       <div class="android-container">
         <div class="android-main-content bg-[#ffffff] dark:bg-[#1c1d1f]">
@@ -19,10 +19,10 @@
           <bottom-tool-bar @onBottomToolBarClick="onBottomToolBarClick"/>
         </div>
       </div>
-      <div class="android-right p-5 bg-[#f7f8faff] dark:bg-[#26282a]"
-           border="1px solid light_border dark:dark_border">
-        <right-tool-bar/>
-      </div>
+<!--      <div class="android-right p-5 bg-[#f7f8faff] dark:bg-[#26282a]"-->
+<!--           border="1px solid light_border dark:dark_border">-->
+<!--        <right-tool-bar/>-->
+<!--      </div>-->
     </div>
   </CommonPage>
 
@@ -64,7 +64,7 @@ export default {
 .android-main {
   display: grid;
   grid-template-rows: 50px 1fr;
-  grid-template-columns: 50px 1fr 50px; /* 你可以调整这个宽度 */
+  grid-template-columns: 0.5fr 1fr; /* 你可以调整这个宽度 */
   height: 100%;
 
   .android-header {
@@ -82,8 +82,8 @@ export default {
     grid-template-rows:  1fr 50px;
   }
 
-  .android-right {
-    grid-row: 2;
-  }
+  //.android-right {
+  //  grid-row: 2;
+  //}
 }
 </style>
