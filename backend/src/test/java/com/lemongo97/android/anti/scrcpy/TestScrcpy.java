@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyDeviceInfoPacket;
 import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyMediaPacket;
 import com.lemongo97.android.anti.scrcpy.codec.packet.ScrcpyVideoMetaDataPacket;
+import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Assertions;
@@ -48,7 +49,7 @@ public class TestScrcpy {
 	@Test
 	public void testVideoConfigFramePacketParse() throws IOException {
 		ByteBuf packetBytebuf = this.getFileByteBuf(videoConfigFramePacketFilePath);
-		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf));
+		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf, ScrcpyPacketType.VIDEO_FRAME));
 		Assertions.assertNotNull(packet);
 		Assertions.assertTrue(packet.isConfigPacket());
 		Assertions.assertFalse(packet.isKeyFramePacket());
@@ -61,7 +62,7 @@ public class TestScrcpy {
 	@Test
 	public void testVideoKeyFramePacketParse() throws IOException {
 		ByteBuf packetBytebuf = this.getFileByteBuf(videoKeyFramePacketFilePath);
-		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf));
+		ScrcpyMediaPacket packet = Assertions.assertDoesNotThrow(() -> new ScrcpyMediaPacket(packetBytebuf, ScrcpyPacketType.VIDEO_FRAME));
 		Assertions.assertNotNull(packet);
 		Assertions.assertFalse(packet.isConfigPacket());
 		Assertions.assertTrue(packet.isKeyFramePacket());
