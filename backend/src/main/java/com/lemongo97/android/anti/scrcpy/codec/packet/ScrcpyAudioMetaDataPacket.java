@@ -13,14 +13,11 @@ import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType.AUDIO
 @AllArgsConstructor
 public class ScrcpyAudioMetaDataPacket implements ScrcpyPacket {
 
-	private CharSequence codec;
+	private String codec;
+	private final ScrcpyPacketType packetType = AUDIO_METADATA;
 
 	public ScrcpyAudioMetaDataPacket(ByteBuf buf) {
-		this.codec = buf.readCharSequence(4, StandardCharsets.UTF_8);
+		this.codec = buf.readCharSequence(4, StandardCharsets.UTF_8).toString();
 	}
 
-	@Override
-	public ScrcpyPacketType getPacketType() {
-		return AUDIO_METADATA;
-	}
 }

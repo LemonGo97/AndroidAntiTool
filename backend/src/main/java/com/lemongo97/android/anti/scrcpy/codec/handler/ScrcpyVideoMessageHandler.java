@@ -19,6 +19,7 @@ public class ScrcpyVideoMessageHandler extends ScrcpyMessageHandler {
 
 	@Override
 	protected void read(ChannelHandlerContext ctx, ScrcpyPacket msg) throws IOException {
+//		log.info(msg.toString());
 		this.webSocketSession.sendMessage(new TextMessage(gson.toJson(msg)));
 	}
 

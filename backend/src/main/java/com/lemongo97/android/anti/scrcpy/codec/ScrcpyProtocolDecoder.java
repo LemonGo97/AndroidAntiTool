@@ -36,7 +36,7 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 				return;
 			}
 			FORWARD.set(true);
-			list.add(new ScrcpyModePacket(byteBuf));
+			list.add(new ScrcpyModePacket(byteBuf.readRetainedSlice(1)));
 			return;
 		}
 
@@ -48,7 +48,7 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 				return;
 			}
 			DEVICE_NAME.set(true);
-			list.add(new ScrcpyDeviceInfoPacket(byteBuf));
+			list.add(new ScrcpyDeviceInfoPacket(byteBuf.readBytes(64)));
 			return;
 		}
 
@@ -66,10 +66,10 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 				return;
 			}
 			VIDEO_HEADER.set(true);
-			list.add(new ScrcpyVideoMetaDataPacket(byteBuf));
+			list.add(new ScrcpyVideoMetaDataPacket(byteBuf.readSlice(VIDEO_HEADER_LENGTH)));
 			return;
 		}
-		this.handleMediaSocket(byteBuf, list);
+		this.handleMediaSocket(byteBuf, list, ScrcpyPacketType.VIDEO_FRAME);
 	}
 
 	private void handleAudioSocket(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list){
@@ -79,13 +79,13 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 				return;
 			}
 			AUDIO_HEADER.set(true);
-			list.add(new ScrcpyAudioMetaDataPacket(byteBuf));
+			list.add(new ScrcpyAudioMetaDataPacket(byteBuf.readSlice(AUDIO_HEADER_LENGTH)));
 			return;
 		}
-		this.handleMediaSocket(byteBuf, list);
+		this.handleMediaSocket(byteBuf, list, ScrcpyPacketType.AUDIO_FRAME);
 	}
 
-	private void handleMediaSocket(ByteBuf byteBuf, List<Object> list){
+	private void handleMediaSocket(ByteBuf byteBuf, List<Object> list, ScrcpyPacketType packetType){
 		if (byteBuf.readableBytes() < MEDIA_FRAME_HEADER_LENGTH) {
 			return;
 		}
@@ -93,7 +93,7 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 		if (byteBuf.readableBytes() < length + MEDIA_FRAME_HEADER_LENGTH) {
 			return;
 		}
-		list.add(new ScrcpyMediaPacket(byteBuf));
+		list.add(new ScrcpyMediaPacket(byteBuf.readSlice(length + MEDIA_FRAME_HEADER_LENGTH), packetType));
 	}
 
 	/**
