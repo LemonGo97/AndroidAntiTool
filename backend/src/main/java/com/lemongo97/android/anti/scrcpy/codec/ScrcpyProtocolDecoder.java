@@ -36,7 +36,7 @@ public class ScrcpyProtocolDecoder extends ByteToMessageDecoder {
 				return;
 			}
 			FORWARD.set(true);
-			list.add(new ScrcpyModePacket(byteBuf.readRetainedSlice(1)));
+			list.add(new ScrcpyModePacket(byteBuf.readSlice(1)));
 			return;
 		}
 
