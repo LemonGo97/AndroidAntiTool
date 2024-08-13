@@ -15,6 +15,8 @@ export default {
   data() {
     return {
       websocket: undefined,
+      videoDecoder: undefined,
+      canvasContext: undefined,
     }
   },
   watch: {
@@ -30,6 +32,8 @@ export default {
     },
   },
   mounted() {
+    this.setupCanvas();
+    this.setupVideoDecoder();
     this.setupWebSocket(this.device)
   },
   beforeUnmount() {
@@ -79,6 +83,34 @@ export default {
       }
       this.websocket.close()
     },
+    setupCanvas(){
+      this.canvasContext = this.$refs.scrcpy.getContext('2d')
+    },
+    setupVideoDecoder() {
+      this.videoDecoder = new VideoDecoder({
+        output: this.handleDecodedFrame,
+        error: this.videoDecoderError
+      });
+      this.videoDecoder.configure({
+        codec: 'avc1.4d002a',
+        hardwareAcceleration: 'prefer-hardware',
+      })
+    },
+    handleDecodedFrame(frame) {
+      console.log("==========================")
+      let canvasDocument = this.$refs.scrcpy
+      console.log(canvasDocument)
+
+      // canvasDocument.width = frame.displayWidth
+      // canvasDocument.height = frame.displayHeight
+      canvasDocument.width = 422
+      canvasDocument.height = 749
+      this.canvasContext.drawImage(frame, 0, 0, 422, 749);
+      frame.close();
+    },
+    videoDecoderError(error){
+      console.error('VideoDecoder error:', error);
+    },
     // 处理Scrcpy信息
     handleScrcpyType(packet){
 
@@ -95,9 +127,34 @@ export default {
     },
     handleVideoFrame(packet){
       console.log("关键帧：", packet.keyFramePacket, "配置帧：", packet.configPacket, )
-
+      if (!this.videoDecoder){
+        return
+      }
       let arrayBuffer = this.wordArrayToArrayBuffer(CryptoJS.enc.Base64.parse(packet.frame));
-
+      if (packet.configPacket){
+        this.videoDecoder.configure({
+          codec: 'avc1.4d002a',
+          hardwareAcceleration: 'prefer-hardware',
+        })
+        this.videoDecoder.configPacket = arrayBuffer
+        return;
+      }
+      let chunk;
+      if (packet.keyFramePacket){
+        chunk = new EncodedVideoChunk({
+          type: 'key', // 或 'delta'，取决于帧类型
+          timestamp: packet.pts,
+          data: this.mergeArrayBuffer(this.videoDecoder.configPacket, arrayBuffer)
+        });
+      }else {
+        chunk = new EncodedVideoChunk({
+          type: 'delta', // 或 'delta'，取决于帧类型
+          timestamp: packet.pts,
+          data: arrayBuffer
+        });
+      }
+      // 将数据块送入解码器
+      this.videoDecoder.decode(chunk);
     },
     // 处理音频帧
     handleAudioMetadata(packet){},
@@ -112,6 +169,12 @@ export default {
         uint8Array[i] = (wordArray.words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
       }
       return arrayBuffer;
+    },
+    mergeArrayBuffer(configWordArrayBuffer, keyFrameWordArrayBuffer) {
+      let tmp = new Uint8Array(configWordArrayBuffer.byteLength + keyFrameWordArrayBuffer.byteLength);
+      tmp.set(new Uint8Array(configWordArrayBuffer), 0);
+      tmp.set(new Uint8Array(keyFrameWordArrayBuffer), configWordArrayBuffer.byteLength);
+      return tmp.buffer;
     }
   }
 }

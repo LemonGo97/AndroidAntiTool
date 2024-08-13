@@ -64,7 +64,7 @@ export default {
 .android-main {
   display: grid;
   grid-template-rows: 50px 1fr;
-  grid-template-columns: 0.5fr 1fr; /* 你可以调整这个宽度 */
+  grid-template-columns: 422px 1fr; /* 你可以调整这个宽度 */
   height: 100%;
 
   .android-header {
