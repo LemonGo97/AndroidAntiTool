@@ -7,3 +7,7 @@ adb shell CLASSPATH=/data/local/tmp/scrcpy-server.jar app_process / com.genymobi
 ```shell
 scrcpy --force-adb-forward
 ```
+
+```shell
+ps -ef|grep scrcpy
+```
