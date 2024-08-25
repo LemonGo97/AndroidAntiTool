@@ -5,3 +5,6 @@ spring:
     locale: zh_CN
   websocket:
     prefix: "/websocket"
+logging:
+  level:
+    io.netty: DEBUG

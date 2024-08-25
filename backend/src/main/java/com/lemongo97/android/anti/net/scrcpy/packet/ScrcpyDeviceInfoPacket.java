@@ -1,27 +1,21 @@
-package com.lemongo97.android.anti.scrcpy.codec.packet;
+package com.lemongo97.android.anti.net.scrcpy.packet;
 
-import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
+import com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.util.ReferenceCountUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.dromara.hutool.core.array.ArrayUtil;
-import org.dromara.hutool.core.collection.ListUtil;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 
-import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType.DEVICE_NAME;
-import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType.MEDIA_FRAME;
+import static com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType.DEVICE_NAME;
+
 
 @Data
 @AllArgsConstructor
-public class ScrcpyDeviceInfoPacket implements ScrcpyPacket{
+public class ScrcpyDeviceInfoPacket implements ScrcpyPacket {
 
 	private String deviceName;
 	private final ScrcpyPacketType packetType = DEVICE_NAME;

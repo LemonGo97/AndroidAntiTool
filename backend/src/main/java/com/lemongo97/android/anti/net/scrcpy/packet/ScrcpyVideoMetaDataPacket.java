@@ -1,13 +1,14 @@
-package com.lemongo97.android.anti.scrcpy.codec.packet;
+package com.lemongo97.android.anti.net.scrcpy.packet;
 
-import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
+import com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType.VIDEO_METADATA;
+import static com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType.VIDEO_METADATA;
+
 
 @Data
 @AllArgsConstructor

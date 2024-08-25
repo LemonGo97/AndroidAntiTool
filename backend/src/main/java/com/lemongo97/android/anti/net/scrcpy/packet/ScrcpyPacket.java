@@ -1,6 +1,7 @@
-package com.lemongo97.android.anti.scrcpy.codec.packet;
+package com.lemongo97.android.anti.net.scrcpy.packet;
 
-import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
+
+import com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType;
 
 public interface ScrcpyPacket {
 	long PACKET_FLAG_CONFIG = 1L << 63;

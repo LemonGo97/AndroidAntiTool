@@ -1,13 +1,11 @@
-package com.lemongo97.android.anti.scrcpy.codec.packet;
+package com.lemongo97.android.anti.net.scrcpy.packet;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.lemongo97.android.anti.config.gson.serializer.ByteBufSerializer;
-import com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType;
+import com.lemongo97.android.anti.net.scrcpy.constants.ScrcpyPacketType;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import static com.lemongo97.android.anti.scrcpy.constants.ScrcpyPacketType.MEDIA_FRAME;
 
 @Data
 @AllArgsConstructor
@@ -33,10 +31,5 @@ public class ScrcpyMediaPacket implements ScrcpyPacket {
 			return;
 		}
 		this.pts = this.ptsAndFlags & PACKET_PTS_MASK;
-	}
-
-
-	public byte[] getFrameBytes() {
-		return frame.array();
 	}
 }
