@@ -1,4 +1,4 @@
-package com.lemongo97.android.anti.scrcpy;
+package com.lemongo97.android.anti.net.scrcpy;
 
 import com.lemongo97.android.anti.net.scrcpy.ScrcpyClient;
 import com.lemongo97.android.anti.net.scrcpy.ScrcpyConfig;

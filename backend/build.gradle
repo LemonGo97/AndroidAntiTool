@@ -61,6 +61,8 @@ dependencies {
     implementation 'org.dromara.hutool:hutool-core:6.0.0-M14'
     implementation 'io.netty:netty-all:4.1.112.Final'
     implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.guava:guava:33.3.0-jre'
+
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
