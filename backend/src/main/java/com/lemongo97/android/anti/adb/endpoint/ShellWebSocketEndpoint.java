@@ -13,7 +13,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import se.vidstige.jadb.ADBTransport;
 import se.vidstige.jadb.JadbConnection;
 import se.vidstige.jadb.JadbDevice;
 
