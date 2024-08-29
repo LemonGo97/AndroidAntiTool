@@ -5,9 +5,9 @@ import com.lemongo97.android.anti.net.adb.model.ADBForwardConfig;
 import com.lemongo97.android.anti.net.adb.transport.SyncTransport;
 import com.lemongo97.android.anti.net.adb.transport.Transport;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -16,6 +16,11 @@ import java.util.concurrent.Executor;
 public class ADBClient {
 
 	private static final int DEFAULT_FILE_MODE = 0664;
+	private static final String SUCCESSFULLY_CONNECTED = "connected to";
+	private static final String ALREADY_CONNECTED = "already connected to";
+
+	private static final String SUCCESSFULLY_DISCONNECTED = "disconnected";
+	private static final String ALREADY_DISCONNECTED = "error: no such device";
 
 	private final String host;
 	private final int port;
@@ -50,6 +55,60 @@ public class ADBClient {
 			transport.send("host:devices");
 			transport.verifyResponse();
 			return ADBDevice.parse(transport.readString());
+		}
+	}
+
+	/**
+	 * 连接到一个TCP Android设备
+	 * @param inetSocketAddress 地址
+	 * @throws IOException IO异常
+	 */
+	public void connect(InetSocketAddress inetSocketAddress) throws IOException {
+		this.connect(inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+	}
+
+	/**
+	 * 连接到一个TCP Android设备
+	 * @param host host
+	 * @param port 端口
+	 * @throws IOException IO异常
+	 */
+	public void connect(String host, int port) throws IOException {
+		Socket socket = ConnectionManager.getConnection(this.host, this.port);
+		try(Transport transport = ConnectionManager.getTransport(socket)){
+			transport.send(String.format("host:%s:%s:%d", "connect", host, port));
+			transport.verifyResponse();
+			String status = transport.readString();
+			if (!status.startsWith(SUCCESSFULLY_CONNECTED) && !status.startsWith(ALREADY_CONNECTED)) {
+				throw new IOException(extractError(status));
+			}
+		}
+	}
+
+	/**
+	 * 断开一个TCP Android设备的连接
+	 * @param inetSocketAddress 地址
+	 * @throws IOException IO异常
+	 */
+	public void disconnect(InetSocketAddress inetSocketAddress) throws IOException {
+		this.disconnect(inetSocketAddress.getHostString(), inetSocketAddress.getPort());
+	}
+
+	/**
+	 * 断开一个TCP Android设备的连接
+	 * @param host host
+	 * @param port 端口
+	 * @throws IOException IO异常
+	 */
+	public void disconnect(String host, int port) throws IOException {
+		Socket socket = ConnectionManager.getConnection(this.host, this.port);
+		try(Transport transport = ConnectionManager.getTransport(socket)){
+			transport.send(String.format("host:%s:%s:%d", "disconnect", host, port));
+			transport.verifyResponse();
+			String status = transport.readString();
+			if (!status.startsWith(SUCCESSFULLY_DISCONNECTED) && !status.startsWith(ALREADY_DISCONNECTED)) {
+				throw new IOException(extractError(status));
+			}
 		}
 	}
 
@@ -104,6 +163,33 @@ public class ADBClient {
 
 			sync.sendStatus("DONE", Long.valueOf(file.lastModified()).intValue());
 			sync.verifyStatus();
+		}
+	}
+
+	/**
+	 * 拉取文件: adb pull [remote-file-path] [local-file-path]
+	 * @param deviceFilePath 设备文件路径
+	 * @param localFile 待存储的本地文件
+	 * @throws IOException IO异常
+	 */
+	public void pull(String deviceFilePath, File localFile) throws IOException{
+		this.pull(null, deviceFilePath, localFile);
+	}
+
+	/**
+	 * 拉取文件: adb -s device pull [remote-file-path] [local-file-path]
+	 * @param serial 设备
+	 * @param deviceFilePath 设备文件路径
+	 * @param localFile 待存储的本地文件
+	 * @throws IOException IO异常
+	 */
+	public void pull(String serial, String deviceFilePath, File localFile) throws IOException{
+		Socket socket = ConnectionManager.getConnection(this.host, this.port);
+		try (Transport transport = ConnectionManager.getTransport(socket).startTransport(serial);
+			FileOutputStream fileStream = new FileOutputStream(localFile)) {
+			SyncTransport sync = transport.startSync();
+			sync.send("RECV", deviceFilePath);
+			sync.readChunksTo(fileStream);
 		}
 	}
 
@@ -321,7 +407,7 @@ public class ADBClient {
 	 */
 	public void killProcess(String serial, int pid) throws IOException {
 		String str = this.execString(serial, "kill " + pid);
-		if (StringUtils.hasText(str)){
+		if ((str != null && !str.isBlank())){
 			throw new IOException(str);
 		}
 	}
@@ -343,8 +429,17 @@ public class ADBClient {
 	 */
 	public void killProcessEnforce(String serial, int pid) throws IOException {
 		String str = this.execString(serial, "kill -9 " + pid);
-		if (StringUtils.hasText(str)){
+		if (str != null && !str.isBlank()){
 			throw new IOException(str);
+		}
+	}
+
+	private String extractError(String response) {
+		int lastColon = response.lastIndexOf(':');
+		if (lastColon != -1) {
+			return response.substring(lastColon);
+		} else {
+			return response;
 		}
 	}
 }
